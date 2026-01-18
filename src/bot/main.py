@@ -219,6 +219,53 @@ Atau ketik langsung ide kamu, dan saya akan bantu buatkan promptnya! ✨
             )
             log.error(f"Error in export command: {e}", exc_info=True)
 
+    async def debug_command(
+        self, update: Update, context: ContextTypes.DEFAULT_TYPE
+    ) -> None:
+        """
+        Handle /debug command to show raw API response.
+
+        Args:
+            update: Telegram update
+            context: Bot context
+        """
+        if not context.args:
+            await update.message.reply_text("⚠️ Masukkan ide untuk debug!", parse_mode="Markdown")
+            return
+
+        user_input = " ".join(context.args)
+        processing_msg = await update.message.reply_text("🐞 DEBUG MODE: Memproses...")
+
+        try:
+            # Generate prompt
+            result = self.engine.generate_prompt(user_input)
+
+            if not result["success"]:
+                await processing_msg.delete()
+                await update.message.reply_text(f"❌ Error: {result.get('error')}")
+                return
+
+            await processing_msg.delete()
+
+            # Extract raw response
+            structured = result.get("structured_result", {})
+            raw_response = structured.get("raw_response", "No raw response found")
+
+            # Send raw response as code block
+            # Split if too long (Telegram limit 4096)
+            if len(raw_response) > 4000:
+                raw_response = raw_response[:4000] + "... (truncated)"
+
+            await update.message.reply_text(
+                f"🐞 **RAW AI RESPONSE**:\n\n```\n{raw_response}\n```",
+                parse_mode="Markdown"
+            )
+
+        except Exception as e:
+            await processing_msg.delete()
+            await update.message.reply_text(f"❌ Exception: {str(e)}")
+            log.error(f"Error in debug command: {e}", exc_info=True)
+
     async def help_command(
         self, update: Update, context: ContextTypes.DEFAULT_TYPE
     ) -> None:
