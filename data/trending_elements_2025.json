@@ -1,0 +1,148 @@
+{
+  "formats": [
+    {
+      "name": "Green Screen",
+      "description": "Split screen with user reacting to content",
+      "platforms": ["tiktok"],
+      "keywords": ["green screen", "reaction", "split screen"]
+    },
+    {
+      "name": "POV",
+      "description": "Point of view format",
+      "platforms": ["tiktok", "instagram", "youtube"],
+      "keywords": ["pov", "point of view", "first person"]
+    },
+    {
+      "name": "Day in My Life",
+      "description": "Following daily routine",
+      "platforms": ["tiktok", "instagram", "youtube"],
+      "keywords": ["day in my life", "diml", "routine"]
+    },
+    {
+      "name": "Transformation",
+      "description": "Before/after comparison",
+      "platforms": ["tiktok", "instagram"],
+      "keywords": ["transformation", "before after", "makeover"]
+    },
+    {
+      "name": "ASMR",
+      "description": "Satisfying sounds and visuals",
+      "platforms": ["tiktok", "instagram", "youtube"],
+      "keywords": ["asmr", "satisfying", "sounds"]
+    },
+    {
+      "name": "Tutorial",
+      "description": "Step-by-step instructional content",
+      "platforms": ["tiktok", "instagram", "youtube"],
+      "keywords": ["tutorial", "how to", "guide"]
+    },
+    {
+      "name": "Challenge",
+      "description": "Participating in trending challenges",
+      "platforms": ["tiktok", "instagram"],
+      "keywords": ["challenge", "trend", "viral"]
+    },
+    {
+      "name": "Storytime",
+      "description": "Narrative storytelling",
+      "platforms": ["tiktok", "youtube"],
+      "keywords": ["storytime", "story", "narrative"]
+    },
+    {
+      "name": "Carousel",
+      "description": "Swipeable image series",
+      "platforms": ["instagram"],
+      "keywords": ["carousel", "swipe", "multiple images"]
+    },
+    {
+      "name": "Unboxing",
+      "description": "Opening and showcasing products",
+      "platforms": ["tiktok", "youtube"],
+      "keywords": ["unboxing", "opening", "reveal"]
+    }
+  ],
+  "sounds": [
+    {
+      "name": "Trending Skincare",
+      "platform": "tiktok",
+      "vibe": "fresh, clean, morning routine"
+    },
+    {
+      "name": "Satisfying ASMR",
+      "platform": "tiktok",
+      "vibe": "calm, relaxing, satisfying"
+    },
+    {
+      "name": "Upbeat Marketing",
+      "platform": "instagram",
+      "vibe": "energetic, exciting, promotional"
+    },
+    {
+      "name": "Storytelling",
+      "platform": "youtube",
+      "vibe": "engaging, informative, thoughtful"
+    }
+  ],
+  "visual_styles": [
+    {
+      "name": "Clean Beauty",
+      "keywords": ["skincare", "makeup", "beauty"],
+      "style": "minimalist, soft lighting, pastel colors",
+      "camera": "close-up shots, slow motion, beauty shots"
+    },
+    {
+      "name": "Cinematic",
+      "keywords": ["film", "movie", "story"],
+      "style": "dramatic lighting, film grain, color graded",
+      "camera": "wide shots, tracking, cinematic movement"
+    },
+    {
+      "name": "Vibrant",
+      "keywords": ["fashion", "lifestyle", "travel"],
+      "style": "bright colors, high contrast, saturated",
+      "camera": "dynamic movement, quick cuts, energetic"
+    },
+    {
+      "name": "Authentic",
+      "keywords": ["ugc", "user generated", "real"],
+      "style": "natural lighting, handheld, realistic",
+      "camera": "phone camera, raw, unpolished"
+    },
+    {
+      "name": "Minimalist",
+      "keywords": ["tech", "product", "review"],
+      "style": "clean background, simple composition",
+      "camera": "product shots, static camera, detailed"
+    }
+  ],
+  "hooks": [
+    "Pagi-pagi udah bangun, wajah mengkilap kayak chef masak?",
+    "Cuma 3 langkah ini bikin [PROBLEM] kamu hilang seketika!",
+    "Stop! Jangan beli [PRODUCT] sebelum nonton ini!",
+    "Rahasianya [RESULT] yang jarang orang tau...",
+    "Ini alasan kenapa [TOPIC] bisa viral banget!",
+    "Pernah lihat [PHENOMENON] tapi nggak tau gimana caranya?",
+    "Ternyata selama ini kamu [MISTAKE]!",
+    "Coba ikutin ini, 100% bakal [RESULT]!",
+    "Siapa sangka ini semua cuma butuh [TIME] saja!",
+    "Nyesel baru tau sekarang, harusnya dari dulu!"
+  ],
+  "hashtags": {
+    "skincare": ["#skincare", "#skincareroutine", "#oilyskin", "#acne", "#facecare", "#beautytips", "#indonesianbeauty", "#skincareviral", "#morningroutine"],
+    "fashion": ["#fashion", "#ootd", "#style", "#outfit", "#fashiontiktok", "#styleinspo", "#fashionviral"],
+    "food": ["#foodtiktok", "#foodie", "#makanan", "#kuliner", "#resepsimple", "#mukbang", "#foodviral"],
+    "tech": ["#tech", "#gadget", "#review", "#techtok", "#gadgetreview", "#techtips"],
+    "lifestyle": ["#lifestyle", "#dailyvlog", "#tips", "#tricks", "#lifehacks", "#viral"],
+    "motivation": ["#motivation", "#inspirasi", "#semangat", "#motivasi", "#mindset"],
+    "general": ["#fyp", "#foryou", "#viral", "#trending", "#rekomendasi", "#indonesia"]
+  },
+  "cta": [
+    "Follow untuk tips lebih lanjut ✨",
+    "Save biar nggak lupa! 🔖",
+    "Share ke temen kamu yang butuh! 👯",
+    "Comment kalau ada pertanyaan 💬",
+    "Subscribe buat konten seru lainnya! 🔔",
+    "Tap follow buat update tiap hari 📲"
+  ],
+  "last_updated": "2025-01-15"
+}
