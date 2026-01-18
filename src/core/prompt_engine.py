@@ -228,62 +228,35 @@ class PromptEngine:
         return specs
 
     def _extract_script(self, raw_response: str) -> Dict:
-        """Extract script sections from AI response."""
+        """Extract script sections from AI response with robust regex."""
+        import re
         script = {"hook": "N/A", "body": "N/A", "cta": "N/A"}
 
-        if "SCRIPT" in raw_response or "Script" in raw_response:
-            lines = raw_response.split("\n")
-            in_section = False
-            current_section = None
-            section_lines = []
+        # Try to find script section
+        if "SCRIPT" not in raw_response.upper():
+            log.warning("SCRIPT section not found in AI response")
+            return script
 
-            for line in lines:
-                is_header = line.strip().startswith("#")
-                
-                if ("HOOK" in line.upper() or "Hook" in line) and is_header:
-                    if section_lines and current_section:
-                        script[current_section] = " ".join(section_lines)
-                    current_section = "hook"
-                    section_lines = []
-                    in_section = True
-                    continue
+        # Normalize line endings
+        text = raw_response.replace("\r\n", "\n")
+        
+        # Regex patterns for sections
+        # Matches: ## Hook, **Hook**, Hook:, etc.
+        patterns = {
+            "hook": r"(?:^|\n)(?:##|\*\*|###)?\s*(?:Hook|HOOK).*?(?:\n|$)(.*?)(?=\n(?:##|\*\*|###)?\s*(?:Body|BODY|CTA|Cta)|$)",
+            "body": r"(?:^|\n)(?:##|\*\*|###)?\s*(?:Body|BODY).*?(?:\n|$)(.*?)(?=\n(?:##|\*\*|###)?\s*(?:CTA|Cta|Hook|HOOK)|$)",
+            "cta": r"(?:^|\n)(?:##|\*\*|###)?\s*(?:CTA|Cta|Call to Action).*?(?:\n|$)(.*?)(?=\n(?:##|\*\*|###)?\s*(?:#|---)|$)"
+        }
 
-                if ("BODY" in line.upper() or "Body" in line) and is_header:
-                    if section_lines and current_section:
-                        script[current_section] = " ".join(section_lines)
-                    current_section = "body"
-                    section_lines = []
-                    continue
-
-                if ("CTA" in line.upper() or "Cta" in line) and is_header:
-                    if section_lines and current_section:
-                        script[current_section] = " ".join(section_lines)
-                    current_section = "cta"
-                    section_lines = []
-                    continue
-
-                if in_section:
-                    # Only break on top-level headers (single #) or separators
-                    if line.strip().startswith("# ") or line.strip() == "#" or "---" in line:
-                        if section_lines and current_section:
-                            script[current_section] = " ".join(section_lines)
-                            section_lines = []
-                        
-                        # Check if it is a known subsection
-                        if any(x in line for x in ["Hook", "Body", "CTA"]):
-                             continue
-                        
-                        # Otherwise it is a new section
-                        break
-
-                    if line.strip() and not line.strip().startswith("*"):
-                        # Clean the line
-                        clean_line = line.strip().strip('"').strip('*')
-                        section_lines.append(clean_line)
-
-            # Add the last section
-            if section_lines and current_section:
-                script[current_section] = " ".join(section_lines)
+        for section, pattern in patterns.items():
+            match = re.search(pattern, text, re.DOTALL | re.IGNORECASE)
+            if match:
+                content = match.group(1).strip()
+                # Clean up quotes if present
+                content = content.strip('"').strip("'").strip("*")
+                if content:
+                    script[section] = content
+                    log.info(f"Extracted {section}: {content[:30]}...")
 
         return script
 
