@@ -64,7 +64,10 @@ class InputValidator:
         # Remove extra whitespace
         sanitized = " ".join(text.split())
 
-        # Remove special HTML/XML characters (basic)
+        # Remove script and style elements with content
+        sanitized = re.sub(r"<(script|style)[^>]*>.*?</\1>", "", sanitized, flags=re.IGNORECASE | re.DOTALL)
+
+        # Remove other HTML/XML tags
         sanitized = re.sub(r"<[^>]+>", "", sanitized)
 
         # Remove potentially dangerous content

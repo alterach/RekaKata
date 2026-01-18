@@ -238,7 +238,9 @@ class PromptEngine:
             section_lines = []
 
             for line in lines:
-                if "HOOK" in line or "Hook" in line:
+                is_header = line.strip().startswith("#")
+                
+                if ("HOOK" in line.upper() or "Hook" in line) and is_header:
                     if section_lines and current_section:
                         script[current_section] = " ".join(section_lines)
                     current_section = "hook"
@@ -246,14 +248,14 @@ class PromptEngine:
                     in_section = True
                     continue
 
-                if "BODY" in line or "Body" in line:
+                if ("BODY" in line.upper() or "Body" in line) and is_header:
                     if section_lines and current_section:
                         script[current_section] = " ".join(section_lines)
                     current_section = "body"
                     section_lines = []
                     continue
 
-                if "CTA" in line or "Cta" in line:
+                if ("CTA" in line.upper() or "Cta" in line) and is_header:
                     if section_lines and current_section:
                         script[current_section] = " ".join(section_lines)
                     current_section = "cta"
@@ -261,11 +263,18 @@ class PromptEngine:
                     continue
 
                 if in_section:
-                    if line.strip().startswith("#") or "---" in line:
+                    # Only break on top-level headers (single #) or separators
+                    if line.strip().startswith("# ") or line.strip() == "#" or "---" in line:
                         if section_lines and current_section:
                             script[current_section] = " ".join(section_lines)
                             section_lines = []
-                        continue
+                        
+                        # Check if it is a known subsection
+                        if any(x in line for x in ["Hook", "Body", "CTA"]):
+                             continue
+                        
+                        # Otherwise it is a new section
+                        break
 
                     if line.strip() and not line.strip().startswith("*"):
                         # Clean the line
@@ -292,7 +301,14 @@ class PromptEngine:
                     continue
 
                 if in_section:
-                    if line.strip().startswith("#") or "---" in line:
+                    # Check for next section header (must be # HEADER format)
+                    if (line.strip().startswith("#") and 
+                        not line.strip().startswith("# ") and 
+                        "#" not in line.strip()[1:]): # Simple heuristic: headers usually don't have multiple # inside
+                        break
+                    
+                    # Also check for --- separator
+                    if "---" in line:
                         break
 
                     if line.strip():
