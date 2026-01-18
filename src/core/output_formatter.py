@@ -63,17 +63,17 @@ class OutputFormatter:
             md_parts.append("# SCRIPT\n")
             script = prompt_data["script"]
 
-            if "hook" in script:
+            if "hook" in script and script["hook"] != "N/A":
                 md_parts.append("## Hook [0:00-0:03]")
                 md_parts.append(f'*"{script["hook"]}"*')
                 md_parts.append("")
 
-            if "body" in script:
+            if "body" in script and script["body"] != "N/A":
                 md_parts.append("## Body [0:03-0:45]")
                 md_parts.append(script["body"])
                 md_parts.append("")
 
-            if "cta" in script:
+            if "cta" in script and script["cta"] != "N/A":
                 md_parts.append("## CTA [0:45-0:60]")
                 md_parts.append(f'*"{script["cta"]}"*')
                 md_parts.append("")
@@ -149,10 +149,13 @@ class OutputFormatter:
 
             script = prompt_data["script"]
 
-            if "hook" in script:
+            if "hook" in script and script["hook"] != "N/A":
                 message_parts.append(f"🎣 Hook: `{script['hook']}`")
 
-            if "cta" in script:
+            if "body" in script and script["body"] != "N/A":
+                message_parts.append(f"📖 Body: `{script['body']}`")
+
+            if "cta" in script and script["cta"] != "N/A":
                 message_parts.append(f"📢 CTA: `{script['cta']}`")
 
             message_parts.append("")
