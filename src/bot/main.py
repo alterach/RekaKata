@@ -28,13 +28,21 @@ class TelegramBot:
         # Register handlers
         self.application.add_handler(CommandHandler("start", self.start_command))
         self.application.add_handler(CommandHandler("generate", self.generate_command))
+        self.application.add_handler(CommandHandler("debug", self.debug_command))
         self.application.add_handler(CommandHandler("export", self.export_command))
+        self.application.add_handler(CommandHandler("ping", self.ping_command))
         self.application.add_handler(CommandHandler("help", self.help_command))
         self.application.add_handler(
             MessageHandler(filters.TEXT & ~filters.COMMAND, self.handle_text)
         )
 
         log.info("TelegramBot initialized")
+
+    async def ping_command(
+        self, update: Update, context: ContextTypes.DEFAULT_TYPE
+    ) -> None:
+        """Handle /ping command."""
+        await update.message.reply_text("🏓 Pong! Bot is alive and running.")
 
     async def start_command(
         self, update: Update, context: ContextTypes.DEFAULT_TYPE
@@ -89,8 +97,9 @@ Atau ketik langsung ide kamu, dan saya akan bantu buatkan promptnya! ✨
         processing_msg = await update.message.reply_text("⏳ Sedang memproses...")
 
         try:
-            # Generate prompt
-            result = self.engine.generate_prompt(user_input)
+            # Generate prompt in background thread
+            loop = asyncio.get_running_loop()
+            result = await loop.run_in_executor(None, self.engine.generate_prompt, user_input)
 
             if not result["success"]:
                 await processing_msg.delete()
@@ -129,8 +138,9 @@ Atau ketik langsung ide kamu, dan saya akan bantu buatkan promptnya! ✨
         processing_msg = await update.message.reply_text("⏳ Sedang memproses...")
 
         try:
-            # Generate prompt
-            result = self.engine.generate_prompt(user_input)
+            # Generate prompt in background thread
+            loop = asyncio.get_running_loop()
+            result = await loop.run_in_executor(None, self.engine.generate_prompt, user_input)
 
             if not result["success"]:
                 await processing_msg.delete()
@@ -237,8 +247,9 @@ Atau ketik langsung ide kamu, dan saya akan bantu buatkan promptnya! ✨
         processing_msg = await update.message.reply_text("🐞 DEBUG MODE: Memproses...")
 
         try:
-            # Generate prompt
-            result = self.engine.generate_prompt(user_input)
+            # Generate prompt in background thread
+            loop = asyncio.get_running_loop()
+            result = await loop.run_in_executor(None, self.engine.generate_prompt, user_input)
 
             if not result["success"]:
                 await processing_msg.delete()
