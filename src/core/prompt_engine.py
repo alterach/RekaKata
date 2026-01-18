@@ -232,31 +232,47 @@ class PromptEngine:
         import re
         script = {"hook": "N/A", "body": "N/A", "cta": "N/A"}
 
-        # Try to find script section
-        if "SCRIPT" not in raw_response.upper():
-            log.warning("SCRIPT section not found in AI response")
-            return script
-
         # Normalize line endings
         text = raw_response.replace("\r\n", "\n")
-        
-        # Regex patterns for sections
-        # Matches: ## Hook, **Hook**, Hook:, etc.
+
+        # Improved regex patterns with fallback attempts
+        # Matches: ## Hook, ## **Hook**, ### Hook, **Hook:, 1. Hook:, Hook:, etc.
         patterns = {
-            "hook": r"(?:^|\n)(?:##|\*\*|###)?\s*(?:Hook|HOOK).*?(?:\n|$)(.*?)(?=\n(?:##|\*\*|###)?\s*(?:Body|BODY|CTA|Cta)|$)",
-            "body": r"(?:^|\n)(?:##|\*\*|###)?\s*(?:Body|BODY).*?(?:\n|$)(.*?)(?=\n(?:##|\*\*|###)?\s*(?:CTA|Cta|Hook|HOOK)|$)",
-            "cta": r"(?:^|\n)(?:##|\*\*|###)?\s*(?:CTA|Cta|Call to Action).*?(?:\n|$)(.*?)(?=\n(?:##|\*\*|###)?\s*(?:#|---)|$)"
+            "hook": [
+                # Try 1: Standard format with time range on new line
+                r"(?:^|\n)(?:##\s*\*+|###\s*|\d+\.\s*)?(?:Hook|HOOK)\*+(?:\s*\[.*?\])?\s*\n+(.*?)(?=\n(?:##\s*\*+|###\s*|\d+\.\s*)?(?:Body|BODY|CTA|Cta)\*+|$)",
+                # Try 2: Inline format with colon
+                r"(?:^|\n)(?:##\s*\*+|###\s*|\d+\.\s*)?(?:Hook|HOOK)\*+:\s+(.*?)(?=\n(?:##\s*\*+|###\s*|\d+\.\s*)?(?:Body|BODY|CTA|Cta)\*+|$)",
+            ],
+            "body": [
+                # Try 1: Standard format with time range on new line
+                r"(?:^|\n)(?:##\s*\*+|###\s*|\d+\.\s*)?(?:Body|BODY)\*+(?:\s*\[.*?\])?\s*\n+(.*?)(?=\n(?:##\s*\*+|###\s*|\d+\.\s*)?(?:CTA|Cta|Hook|HOOK)\*+|$)",
+                # Try 2: Inline format with colon
+                r"(?:^|\n)(?:##\s*\*+|###\s*|\d+\.\s*)?(?:Body|BODY)\*+:\s+(.*?)(?=\n(?:##\s*\*+|###\s*|\d+\.\s*)?(?:CTA|Cta|Hook|HOOK)\*+|$)",
+            ],
+            "cta": [
+                # Try 1: Standard format with time range on new line
+                r"(?:^|\n)(?:##\s*\*+|###\s*|\d+\.\s*)?(?:CTA|Cta|Call to Action)\*+(?:\s*\[.*?\])?\s*\n+(.*?)(?=\n(?:##\s*\*+|###\s*|#|---)|$)",
+                # Try 2: Inline format with colon
+                r"(?:^|\n)(?:##\s*\*+|###\s*|\d+\.\s*)?(?:CTA|Cta|Call to Action)\*+:\s+(.*?)(?=\n(?:##\s*\*+|###\s*|#|---)|$)",
+            ],
         }
 
-        for section, pattern in patterns.items():
-            match = re.search(pattern, text, re.DOTALL | re.IGNORECASE)
-            if match:
-                content = match.group(1).strip()
-                # Clean up quotes if present
-                content = content.strip('"').strip("'").strip("*")
-                if content:
-                    script[section] = content
-                    log.info(f"Extracted {section}: {content[:30]}...")
+        for section, pattern_list in patterns.items():
+            content = "N/A"
+            for pattern in pattern_list:
+                match = re.search(pattern, text, re.DOTALL | re.IGNORECASE)
+                if match:
+                    captured = match.group(1).strip()
+                    # Clean up quotes, asterisks, colons if present
+                    cleaned = captured.strip('"').strip("'").strip("*").strip("-").lstrip(':').strip()
+                    if cleaned and cleaned != "N/A":
+                        content = cleaned
+                        log.info(f"Extracted {section}: {content[:30]}...")
+                        break
+            script[section] = content
+            if content == "N/A":
+                log.warning(f"No match found for {section} in AI response")
 
         return script
 

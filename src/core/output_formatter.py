@@ -3,6 +3,7 @@ import json
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, Optional
+from telegram.helpers import escape_markdown
 from config.settings import get_settings
 from config.logging_config import log
 
@@ -64,18 +65,21 @@ class OutputFormatter:
             script = prompt_data["script"]
 
             if "hook" in script and script["hook"] != "N/A":
+                escaped_hook = escape_markdown(script['hook'])
                 md_parts.append("## Hook [0:00-0:03]")
-                md_parts.append(f'*"{script["hook"]}"*')
+                md_parts.append(f'*"{escaped_hook}"*')
                 md_parts.append("")
 
             if "body" in script and script["body"] != "N/A":
+                escaped_body = escape_markdown(script['body'])
                 md_parts.append("## Body [0:03-0:45]")
-                md_parts.append(script["body"])
+                md_parts.append(escaped_body)
                 md_parts.append("")
 
             if "cta" in script and script["cta"] != "N/A":
+                escaped_cta = escape_markdown(script['cta'])
                 md_parts.append("## CTA [0:45-0:60]")
-                md_parts.append(f'*"{script["cta"]}"*')
+                md_parts.append(f'*"{escaped_cta}"*')
                 md_parts.append("")
 
             md_parts.append("---\n")
@@ -150,13 +154,16 @@ class OutputFormatter:
             script = prompt_data["script"]
 
             if "hook" in script and script["hook"] != "N/A":
-                message_parts.append(f"🎣 Hook: `{script['hook']}`")
+                escaped_hook = escape_markdown(script['hook'])
+                message_parts.append(f"🎣 Hook: `{escaped_hook}`")
 
             if "body" in script and script["body"] != "N/A":
-                message_parts.append(f"📖 Body: `{script['body']}`")
+                escaped_body = escape_markdown(script['body'])
+                message_parts.append(f"📖 Body: `{escaped_body}`")
 
             if "cta" in script and script["cta"] != "N/A":
-                message_parts.append(f"📢 CTA: `{script['cta']}`")
+                escaped_cta = escape_markdown(script['cta'])
+                message_parts.append(f"📢 CTA: `{escaped_cta}`")
 
             message_parts.append("")
 
